@@ -1,0 +1,3 @@
+City Name, Current Temperature, Weather Description, Humidity, Wind Speed, Atmospheric Pressure
+"Tokyo","25°C","Clear Sky","60%","10 km/h","1015 hPa"
+"London","18°C","Partly Cloudy","70%","15 km/h","1018 hPa"

@@ -1,0 +1,16 @@
+# Web Scraping Assignment 3 
+# Student: Hande Gürsoy
+# Date: 29/11/2024
+
+# Web Scraping Framework
+scrapy==2.6.3
+
+# Data Processing
+pandas==2.0.1
+requests==2.28.2
+
+# HTML Parsing
+beautifulsoup4==4.11.2
+
+# Additional Utilities
+lxml==4.9.2
