@@ -1,0 +1,177 @@
+Solutions
+Problem 1: Number Guessing Game
+
+from random import randint
+
+
+print("I picked a number between 1 and 20, endpoints included. Guess it!")
+
+
+pick = randint(1, 20)
+
+
+bingo = False
+
+
+while not bingo:
+    
+    guess = int(input("Your guess: "))
+    
+
+    if guess > pick:
+        print("Pick a lower number!")
+    elif guess < pick:
+        print("Pick a higher number!")
+    else:
+        print("Your guess is correct!")
+    
+
+    bingo = guess == pick
+
+Problem 2: Finding or Inserting Target in a Sorted Array
+
+
+sarr = [21, 10, 90, 233, 2, 81, 9, 29, 1, 40]
+sarr.sort() 
+print("Sorted array:", sarr)
+
+target = 91  
+
+
+for i, num in enumerate(sarr):
+    if target == num:
+        print(f"Found in index {i}.")
+        break
+    elif target < num:
+        print(f"Not found. Should be inserted at index {i}.")
+        break
+else:
+    print(f"Not found. Should be inserted at index {len(sarr)}.")
+
+
+
+Here’s an improved and polished version of your solutions, formatted to meet the requirements for submission as a Jupyter Notebook. Each solution is written clearly and includes comments for better understanding:
+
+Assignment 1 - Solutions
+Problem 1: Number Guessing Game
+python
+Kopyala
+Düzenle
+# Importing the necessary library
+from random import randint
+
+# Informing the user about the game
+print("I picked a number between 1 and 20, endpoints included. Guess it!")
+
+# Generating a random number between 1 and 20
+pick = randint(1, 20)
+
+# Initializing the loop control variable
+bingo = False
+
+# Main game loop
+while not bingo:
+    # Taking the user's guess as input
+    guess = int(input("Your guess: "))
+    
+    # Checking the guess and providing feedback
+    if guess > pick:
+        print("Pick a lower number!")
+    elif guess < pick:
+        print("Pick a higher number!")
+    else:
+        print("Your guess is correct!")
+    
+    # Exiting the loop if the guess is correct
+    bingo = guess == pick
+Problem 2: Finding or Inserting Target in a Sorted Array
+python
+Kopyala
+Düzenle
+# Defining the sorted array and the target value
+sarr = [21, 10, 90, 233, 2, 81, 9, 29, 1, 40]
+sarr.sort()  # Sorting the array
+print("Sorted array:", sarr)
+
+target = 91  # Target value to find or insert
+
+# Finding the target or its insertion point
+for i, num in enumerate(sarr):
+    if target == num:
+        print(f"Found in index {i}.")
+        break
+    elif target < num:
+        print(f"Not found. Should be inserted at index {i}.")
+        break
+else:
+    print(f"Not found. Should be inserted at index {len(sarr)}.")
+
+Problem 3: Adding Two Binary Strings
+
+
+from itertools import zip_longest
+
+
+a = "1100"  # Binary equivalent of 12
+b = "101"   # Binary equivalent of 5
+
+
+carry = 0
+result = ""
+
+
+for digit_a, digit_b in zip_longest(a[::-1], b[::-1], fillvalue="0"):
+ 
+    total = int(digit_a) + int(digit_b) + carry
+    result = str(total % 2) + result  
+    carry = total // 2 
+
+
+if carry:
+    result = "1" + result
+
+
+print("Binary sum:", result)
+print("Decimal value:", int(result, 2))
+
+Problem 4: Finding the Single Element in an Array
+
+
+arr = [32, 2, 9, 12, 2, 0, 0, 99, 32, 9, 99]
+
+
+tracker = set()
+
+for num in arr:
+    if num in tracker:
+        tracker.remove(num) 
+    else:
+        tracker.add(num)  
+
+
+print("Single element:", tracker.pop())
+
+Problem 5: Finding Repeated DNA Sequences
+
+
+from collections import Counter
+
+
+dna = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+
+
+substrings = [dna[i:i+10] for i in range(len(dna) - 9)]
+
+
+occurrences = Counter(substrings)
+
+
+repeated = [seq for seq, count in occurrences.items() if count > 1]
+
+
+print("Repeated sequences:", repeated)
+
+
+
+
+
