@@ -1,0 +1,145 @@
+1. Load and Visualize the Dataset
+
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as plt
+
+shapefile_path = "path_to_us_counties_shapefile.shp"
+counties = gpd.read_file(shapefile_path)
+
+socioeconomic_data_path = "path_to_socioeconomic_data.csv"
+socio_data = pd.read_csv(socioeconomic_data_path)
+
+merged_data = counties.merge(socio_data, on="FIPS")
+
+plt.figure(figsize=(12, 8))
+merged_data.plot(column="some_indicator", cmap="viridis", legend=True)
+plt.title("Spatial Distribution of Socio-Economic Indicator")
+plt.axis("off")
+plt.show()
+
+2. Spatial Weight Matrix
+
+from libpysal.weights import Queen
+
+w = Queen.from_dataframe(merged_data)
+
+print(w)
+
+
+Here’s a complete solution for Assignment 5, structured as a Jupyter Notebook, to ensure all tasks are handled correctly.
+
+Assignment 5: Spatial Analysis Using Python
+Objective
+Analyze the spatial dependence of socio-economic indicators of US counties using Python. The tasks include loading data, creating spatial weight matrices, calculating Moran's I, running spatial regression, and visualizing spatial distributions.
+
+Solution
+1. Load and Visualize the Dataset
+python
+Kopyala
+Düzenle
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load shapefile for US counties (replace with actual shapefile path)
+shapefile_path = "path_to_us_counties_shapefile.shp"
+counties = gpd.read_file(shapefile_path)
+
+# Load socio-economic data (replace with actual CSV path)
+socioeconomic_data_path = "path_to_socioeconomic_data.csv"
+socio_data = pd.read_csv(socioeconomic_data_path)
+
+# Merge shapefile with socio-economic data on a common key (e.g., FIPS code)
+merged_data = counties.merge(socio_data, on="FIPS")
+
+# Plot the spatial distribution of counties
+plt.figure(figsize=(12, 8))
+merged_data.plot(column="some_indicator", cmap="viridis", legend=True)
+plt.title("Spatial Distribution of Socio-Economic Indicator")
+plt.axis("off")
+plt.show()
+2. Spatial Weight Matrix
+python
+Kopyala
+Düzenle
+from libpysal.weights import Queen
+
+# Create a spatial weights matrix using Queen contiguity
+w = Queen.from_dataframe(merged_data)
+
+# Print summary of the spatial weights matrix
+print(w)
+
+3. Spatial Autocorrelation
+
+from esda.moran import Moran
+
+indicator = merged_data["some_indicator"]
+
+moran = Moran(indicator, w)
+print(f"Moran's I: {moran.I}")
+print(f"p-value: {moran.p_sim}")
+
+4. Spatial Regression
+
+from spreg import ML_Lag
+
+y = merged_data[["some_indicator"]].values
+
+X = merged_data[["education_level", "population_density"]].values
+
+model = ML_Lag(y, X, w=w, name_y="Income", name_x=["Education", "Population Density"])
+
+print(model.summary)
+
+5. Visualization
+
+plt.figure(figsize=(12, 8))
+merged_data.plot(column="some_indicator", cmap="plasma", legend=True)
+plt.title("Choropleth Map of Socio-Economic Indicator")
+plt.axis("off")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
