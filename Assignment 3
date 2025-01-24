@@ -1,0 +1,55 @@
+Python Code for Data Scraping
+
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+base_url = "https://openweathermap.org/city/"
+
+cities = ["London", "New York", "Istanbul", "Tokyo", "Paris"]
+
+
+weather_data = []
+
+
+for city in cities:
+    try:
+        
+        city_url = f"{base_url}{city}"
+        
+
+        response = requests.get(city_url)
+        response.raise_for_status()  # Raise an error for bad responses
+        
+
+        soup = BeautifulSoup(response.content, "html.parser")
+        
+
+        city_name = city
+        temp = soup.find("span", class_="heading").text.strip()
+        weather_desc = soup.find("div", class_="weather-description").text.strip()
+        humidity = soup.find("div", class_="humidity").text.strip()
+        wind_speed = soup.find("div", class_="wind-speed").text.strip()
+        pressure = soup.find("div", class_="pressure").text.strip()
+        
+
+        weather_data.append({
+            "City": city_name,
+            "Temperature": temp,
+            "Weather Description": weather_desc,
+            "Humidity": humidity,
+            "Wind Speed": wind_speed,
+            "Pressure": pressure
+        })
+    
+    except Exception as e:
+        print(f"Failed to scrape data for {city}: {e}")
+
+
+df_weather = pd.DataFrame(weather_data)
+
+
+df_weather.to_csv("weather_data.csv", index=False)
+
+
+print(df_weather)
