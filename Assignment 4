@@ -1,0 +1,235 @@
+1. Load and Explore the Dataset
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import ttest_ind, linregress
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
+
+gss_data = pd.read_csv("gss_data.csv")
+
+
+print("First 5 rows of the dataset:")
+print(gss_data.head())
+
+
+print("\nDataset Info:")
+print(gss_data.info())
+
+
+missing_values = gss_data.isnull().sum()
+print("\nMissing Values:")
+print(missing_values[missing_values > 0])
+
+2. 
+Here's a comprehensive solution for Assignment 4, following the requirements for statistical analysis using the GSS dataset. This solution is structured to be presented in a Jupyter Notebook.
+
+Assignment 4: Statistical Analysis Using Python
+1. Load and Explore the Dataset
+python
+Kopyala
+Düzenle
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import ttest_ind, linregress
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
+# Load the GSS dataset (replace with the actual dataset path)
+gss_data = pd.read_csv("gss_data.csv")
+
+# Display the first few rows
+print("First 5 rows of the dataset:")
+print(gss_data.head())
+
+# Display dataset information
+print("\nDataset Info:")
+print(gss_data.info())
+
+# Check for missing values
+missing_values = gss_data.isnull().sum()
+print("\nMissing Values:")
+print(missing_values[missing_values > 0])
+
+2. Descriptive Statistics
+
+variables = ["income", "educ", "age"]
+
+
+desc_stats = gss_data[variables].describe()
+print("\nDescriptive Statistics:")
+print(desc_stats)
+
+
+for var in variables:
+    plt.figure(figsize=(8, 4))
+    sns.histplot(gss_data[var].dropna(), kde=True, bins=30)
+    plt.title(f"Distribution of {var}")
+    plt.xlabel(var)
+    plt.ylabel("Frequency")
+    plt.show()
+
+
+plt.figure(figsize=(8, 6))
+sns.boxplot(data=gss_data[variables], orient="h")
+plt.title("Box Plots for Selected Variables")
+plt.show()
+
+
+
+Here's a comprehensive solution for Assignment 4, following the requirements for statistical analysis using the GSS dataset. This solution is structured to be presented in a Jupyter Notebook.
+
+Assignment 4: Statistical Analysis Using Python
+1. Load and Explore the Dataset
+python
+Kopyala
+Düzenle
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import ttest_ind, linregress
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
+# Load the GSS dataset (replace with the actual dataset path)
+gss_data = pd.read_csv("gss_data.csv")
+
+# Display the first few rows
+print("First 5 rows of the dataset:")
+print(gss_data.head())
+
+# Display dataset information
+print("\nDataset Info:")
+print(gss_data.info())
+
+# Check for missing values
+missing_values = gss_data.isnull().sum()
+print("\nMissing Values:")
+print(missing_values[missing_values > 0])
+2. Descriptive Statistics
+python
+Kopyala
+Düzenle
+# Select key variables for analysis (e.g., income, education, age)
+variables = ["income", "educ", "age"]
+
+# Calculate descriptive statistics
+desc_stats = gss_data[variables].describe()
+print("\nDescriptive Statistics:")
+print(desc_stats)
+
+# Plot histograms for variable distributions
+for var in variables:
+    plt.figure(figsize=(8, 4))
+    sns.histplot(gss_data[var].dropna(), kde=True, bins=30)
+    plt.title(f"Distribution of {var}")
+    plt.xlabel(var)
+    plt.ylabel("Frequency")
+    plt.show()
+
+# Box plots for outlier detection
+plt.figure(figsize=(8, 6))
+sns.boxplot(data=gss_data[variables], orient="h")
+plt.title("Box Plots for Selected Variables")
+plt.show()
+
+3. Inferential Statistics
+
+
+group1 = gss_data[gss_data["sex"] == "Male"]["income"]
+group2 = gss_data[gss_data["sex"] == "Female"]["income"]
+
+t_stat, p_val = ttest_ind(group1.dropna(), group2.dropna(), equal_var=False)
+print(f"\nT-test Results: t-statistic = {t_stat}, p-value = {p_val}")
+
+
+conf_interval = gss_data["income"].dropna().quantile([0.025, 0.975])
+print(f"\n95% Confidence Interval for Income: {conf_interval}")
+
+4. Correlation Analysis
+
+correlation = gss_data[["income", "educ"]].corr()
+print("\nCorrelation Matrix:")
+print(correlation)
+
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x="educ", y="income", data=gss_data)
+plt.title("Scatter Plot: Income vs. Education")
+plt.xlabel("Years of Education")
+plt.ylabel("Income")
+plt.show()
+
+plt.figure(figsize=(6, 5))
+sns.heatmap(correlation, annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Correlation Heatmap")
+plt.show()
+
+5. Regression Analysis
+
+formula = "income ~ educ + age"
+ols_model = smf.ols(formula, data=gss_data).fit()
+
+print("\nOLS Regression Summary:")
+print(ols_model.summary())
+
+print("\nModel Coefficients:")
+print(ols_model.params)
+
+6. Model Diagnostics
+
+fitted_vals = ols_model.fittedvalues
+residuals = ols_model.resid
+
+plt.figure(figsize=(8, 6))
+sns.residplot(x=fitted_vals, y=residuals, lowess=True, line_kws={"color": "red"})
+plt.title("Residuals vs. Fitted Values")
+plt.xlabel("Fitted Values")
+plt.ylabel("Residuals")
+plt.show()
+
+plt.figure(figsize=(8, 6))
+sns.histplot(residuals, kde=True, bins=30)
+plt.title("Distribution of Residuals")
+plt.xlabel("Residuals")
+plt.ylabel("Frequency")
+plt.show()
+
+sm.qqplot(residuals, line="s")
+plt.title("QQ Plot")
+plt.show()
+
+plt.figure(figsize=(8, 6))
+plt.scatter(fitted_vals, np.sqrt(np.abs(residuals)), alpha=0.5)
+plt.title("Scale-Location Plot")
+plt.xlabel("Fitted Values")
+plt.ylabel("√|Residuals|")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
