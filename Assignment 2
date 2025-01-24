@@ -1,0 +1,113 @@
+1) Load the Dataset
+import pandas as pd
+
+gapminder = pd.read_csv("gapminder.csv")
+
+gapminder.head()
+
+2) Data Merging
+
+gapminder_long = gapminder.melt(
+    id_vars=["country", "continent"],
+    var_name="indicator_year",
+    value_name="value"
+)
+
+
+gapminder_long[['indicator', 'year']] = gapminder_long['indicator_year'].str.split('_', expand=True)
+gapminder_long.drop(columns=['indicator_year'], inplace=True)
+
+
+merged_data = gapminder_long.pivot_table(
+    index=["country", "continent", "year"],
+    columns="indicator",
+    values="value",
+    aggfunc="first"
+).reset_index()
+
+merged_data.head()
+
+3) Data Cleaning and Preparation
+
+missing_values = merged_data.isnull().sum()
+
+cleaned_data = merged_data.fillna(merged_data.median())
+
+cleaned_data.rename(
+    columns={"pop": "Population", "gdpPercap": "GDP per Capita", "lifeExp": "Life Expectancy"},
+    inplace=True
+)
+
+cleaned_data.head()
+
+4)  Data Exploration
+
+print("First 5 rows:")
+print(cleaned_data.head())
+print("\nLast 5 rows:")
+print(cleaned_data.tail())
+
+unique_countries = cleaned_data["country"].nunique()
+print(f"\nNumber of unique countries: {unique_countries}")
+
+data_2000 = cleaned_data[cleaned_data["year"] == "2000"]
+data_2000.head()
+
+5) Data Filtering
+
+africa_data = cleaned_data[cleaned_data["continent"] == "Africa"]
+
+africa_filtered = africa_data[africa_data["Population"] >= 1_000_000]
+
+africa_filtered.head()
+
+6) Data Organization
+
+sorted_data = cleaned_data.sort_values(by="Life Expectancy", ascending=True)
+
+def categorize_population(pop):
+    if pop >= 50_000_000:
+        return "High"
+    elif pop >= 10_000_000:
+        return "Medium"
+    else:
+        return "Low"
+
+cleaned_data["Population Category"] = cleaned_data["Population"].apply(categorize_population)
+
+cleaned_data.head()
+
+7) Basic Data Analysis
+
+average_gdp_per_continent = cleaned_data.groupby("continent")["GDP per Capita"].mean()
+print("Average GDP per capita for each continent:")
+print(average_gdp_per_continent)
+
+highest_life_expectancy = cleaned_data[cleaned_data["year"] == "2000"].sort_values(
+    by="Life Expectancy", ascending=False
+).iloc[0]
+print("\nCountry with highest life expectancy in 2000:")
+print(highest_life_expectancy[["country", "Life Expectancy"]])
+
+8) Data Visualization
+
+import matplotlib.pyplot as plt
+
+japan_data = cleaned_data[cleaned_data["country"] == "Japan"]
+
+plt.figure(figsize=(10, 6))
+plt.plot(japan_data["year"], japan_data["Life Expectancy"], marker='o', label="Life Expectancy")
+plt.title("Life Expectancy in Japan Over the Years")
+plt.xlabel("Year")
+plt.ylabel("Life Expectancy")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+
+
+
+
+
+
