@@ -1,0 +1,244 @@
+1. Data Preparation
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+
+data_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
+columns = ["age", "workclass", "fnlwgt", "education", "education-num", "marital-status",
+           "occupation", "relationship", "race", "sex", "capital-gain", "capital-loss",
+           "hours-per-week", "native-country", "income"]
+data = pd.read_csv(data_url, names=columns, na_values=" ?", skipinitialspace=True)
+
+print("Dataset Overview:")
+print(data.head())
+print("\nMissing Values:")
+print(data.isnull().sum())
+
+imputer = SimpleImputer(strategy="most_frequent")
+data_imputed = pd.DataFrame(imputer.fit_transform(data), columns=data.columns)
+
+categorical_columns = data_imputed.select_dtypes(include="object").columns
+encoder = LabelEncoder()
+for col in categorical_columns:
+    data_imputed[col] = encoder.fit_transform(data_imputed[col])
+
+scaler = StandardScaler()
+numerical_columns = data_imputed.select_dtypes(include="number").columns
+data_imputed[numerical_columns] = scaler.fit_transform(data_imputed[numerical_columns])
+
+# Split the dataset into training and test sets
+X = data_imputed.drop("income", axis=1)
+y = data_imputed["income"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print("\nData Preparation Completed.")
+
+2. Model Implementation
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+logistic_model = LogisticRegression()
+logistic_model.fit(X_train, y_train)
+
+tree_model = DecisionTreeClassifier(random_state=42)
+tree_model.fit(X_train, y_train)
+
+forest_model = RandomForestClassifier(random_state=42)
+forest_model.fit(X_train, y_train)
+
+3. Model Tuning
+
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    "n_estimators": [50, 100, 150],
+    "max_depth": [None, 10, 20],
+    "min_samples_split": [2, 5, 10]
+}
+grid_search = GridSearchCV(forest_model, param_grid, cv=3, scoring="accuracy")
+grid_search.fit(X_train, y_train)
+
+best_forest_model = grid_search.best_estimator_
+print("\nBest Random Forest Parameters:", grid_search.best_params_)
+
+4. Model Evaluation
+
+from sklearn.metrics import accuracy_score, f1_score, classification_report
+
+logistic_preds = logistic_model.predict(X_test)
+logistic_acc = accuracy_score(y_test, logistic_preds)
+logistic_f1 = f1_score(y_test, logistic_preds)
+
+tree_preds = tree_model.predict(X_test)
+tree_acc = accuracy_score(y_test, tree_preds)
+tree_f1 = f1_score(y_test, tree_preds)
+
+forest_preds = best_forest_model.predict(X_test)
+forest_acc = accuracy_score(y_test, forest_preds)
+forest_f1 = f1_score(y_test, forest_preds)
+
+print("\nModel Performance Comparison:")
+print(f"Logistic Regression - Accuracy: {logistic_acc:.2f}, F1-Score: {logistic_f1:.2f}")
+print(f"Decision Tree - Accuracy: {tree_acc:.2f}, F1-Score: {tree_f1:.2f}")
+print(f"Random Forest - Accuracy: {forest_acc:.2f}, F1-Score: {forest_f1:.2f}")
+
+
+Here is a complete solution for Assignment 6 based on the requirements for developing machine learning models to predict income status using the UCI Adult Income dataset. This solution is structured for implementation in a Jupyter Notebook.
+
+Assignment 6: Machine Learning Models for Predicting Income
+1. Data Preparation
+python
+Kopyala
+Düzenle
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+
+# Load the dataset (replace with your actual file path)
+data_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data"
+columns = ["age", "workclass", "fnlwgt", "education", "education-num", "marital-status",
+           "occupation", "relationship", "race", "sex", "capital-gain", "capital-loss",
+           "hours-per-week", "native-country", "income"]
+data = pd.read_csv(data_url, names=columns, na_values=" ?", skipinitialspace=True)
+
+# Display initial dataset information
+print("Dataset Overview:")
+print(data.head())
+print("\nMissing Values:")
+print(data.isnull().sum())
+
+# Handle missing values using imputation
+imputer = SimpleImputer(strategy="most_frequent")
+data_imputed = pd.DataFrame(imputer.fit_transform(data), columns=data.columns)
+
+# Encode categorical variables
+categorical_columns = data_imputed.select_dtypes(include="object").columns
+encoder = LabelEncoder()
+for col in categorical_columns:
+    data_imputed[col] = encoder.fit_transform(data_imputed[col])
+
+# Normalize numerical features
+scaler = StandardScaler()
+numerical_columns = data_imputed.select_dtypes(include="number").columns
+data_imputed[numerical_columns] = scaler.fit_transform(data_imputed[numerical_columns])
+
+# Split the dataset into training and test sets
+X = data_imputed.drop("income", axis=1)
+y = data_imputed["income"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print("\nData Preparation Completed.")
+2. Model Implementation
+python
+Kopyala
+Düzenle
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+# Logistic Regression
+logistic_model = LogisticRegression()
+logistic_model.fit(X_train, y_train)
+
+# Decision Tree
+tree_model = DecisionTreeClassifier(random_state=42)
+tree_model.fit(X_train, y_train)
+
+# Random Forest
+forest_model = RandomForestClassifier(random_state=42)
+forest_model.fit(X_train, y_train)
+3. Model Tuning
+python
+Kopyala
+Düzenle
+from sklearn.model_selection import GridSearchCV
+
+# Tune Random Forest with GridSearch
+param_grid = {
+    "n_estimators": [50, 100, 150],
+    "max_depth": [None, 10, 20],
+    "min_samples_split": [2, 5, 10]
+}
+grid_search = GridSearchCV(forest_model, param_grid, cv=3, scoring="accuracy")
+grid_search.fit(X_train, y_train)
+
+best_forest_model = grid_search.best_estimator_
+print("\nBest Random Forest Parameters:", grid_search.best_params_)
+4. Model Evaluation
+python
+Kopyala
+Düzenle
+from sklearn.metrics import accuracy_score, f1_score, classification_report
+
+# Evaluate Logistic Regression
+logistic_preds = logistic_model.predict(X_test)
+logistic_acc = accuracy_score(y_test, logistic_preds)
+logistic_f1 = f1_score(y_test, logistic_preds)
+
+# Evaluate Decision Tree
+tree_preds = tree_model.predict(X_test)
+tree_acc = accuracy_score(y_test, tree_preds)
+tree_f1 = f1_score(y_test, tree_preds)
+
+# Evaluate Random Forest
+forest_preds = best_forest_model.predict(X_test)
+forest_acc = accuracy_score(y_test, forest_preds)
+forest_f1 = f1_score(y_test, forest_preds)
+
+# Compare model performances
+print("\nModel Performance Comparison:")
+print(f"Logistic Regression - Accuracy: {logistic_acc:.2f}, F1-Score: {logistic_f1:.2f}")
+print(f"Decision Tree - Accuracy: {tree_acc:.2f}, F1-Score: {tree_f1:.2f}")
+print(f"Random Forest - Accuracy: {forest_acc:.2f}, F1-Score: {forest_f1:.2f}")
+
+
+6. Visualization
+
+impimport matplotlib.pyplot as plt
+
+feature_importance = best_forest_model.feature_importances_
+features = X.columns
+importance_df = pd.DataFrame({"Feature": features, "Importance": feature_importance})
+importance_df = importance_df.sort_values(by="Importance", ascending=False)
+
+plt.figure(figsize=(10, 6))
+plt.barh(importance_df["Feature"], importance_df["Importance"], color="skyblue")
+plt.gca().invert_yaxis()
+plt.title("Feature Importance (Random Forest)")
+plt.xlabel("Importance")
+plt.ylabel("Feature")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
